@@ -315,6 +315,8 @@ function startTimer(seconds){
 
             clearInterval(timerInterval);
 
+            playBell(); // 播放鈴聲
+            
             alert("時間到！");
         }
 
@@ -342,6 +344,36 @@ function startSpeech(){
 }
 
 updateList();
+
+function playBell() {
+
+    const audioContext =
+        new (window.AudioContext ||
+             window.webkitAudioContext)();
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gainNode =
+        audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = 880; // 音高
+
+    gainNode.gain.setValueAtTime(
+        0.3,
+        audioContext.currentTime
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + 1
+    );
+}
 
 </script>
 
