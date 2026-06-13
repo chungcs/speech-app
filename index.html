@@ -297,6 +297,7 @@ function deleteTopic(index){
 }
 
 let timerInterval;
+let audioContext;
 
 function startTimer(seconds){
 
@@ -312,15 +313,14 @@ function startTimer(seconds){
 
         updateTimer(remain);
 
-        if(remain<=0){
+if(remain<=0){
 
-            clearInterval(timerInterval);
+    clearInterval(timerInterval);
 
-            playBell(); // 播放鈴聲
-            
-            alert("時間到！");
-        }
+    playBell();
 
+    setTimeout(()=>{
+        alert("時間到！");
     },1000);
 }
 
@@ -337,19 +337,56 @@ function updateTimer(sec){
 }
 
 function startPrepare(){
+
+    unlockAudio();
+
     startTimer(60);
 }
 
 function startSpeech(){
+
+    unlockAudio();
+
     startTimer(180);
 }
 
 updateList();
 
-const bell = new Audio("bell.mp3");
+function unlockAudio(){
+
+    if(!audioContext){
+
+        audioContext =
+            new (window.AudioContext ||
+                 window.webkitAudioContext)();
+    }
+
+    audioContext.resume();
+}
 
 function playBell(){
-    bell.play();
+
+    if(!audioContext) return;
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gainNode =
+        audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = 1000;
+
+    gainNode.gain.value = 0.5;
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + 1
+    );
 }
 
 </script>
