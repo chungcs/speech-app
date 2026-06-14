@@ -378,14 +378,14 @@ function playBell(){
     gainNode.connect(audioContext.destination);
 
     oscillator.type = "sine";
-    oscillator.frequency.value = 1000;
+    oscillator.frequency.value = 800;
 
-    gainNode.gain.value = 0.5;
+    gainNode.gain.value = 1;
 
     oscillator.start();
 
     oscillator.stop(
-        audioContext.currentTime + 1
+        audioContext.currentTime + 2
     );
 }
 
